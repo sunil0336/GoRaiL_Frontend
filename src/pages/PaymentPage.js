@@ -10,7 +10,7 @@ import {
   Typography,
   Paper,
   Snackbar,
-  Alert
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 
@@ -25,7 +25,11 @@ export default function PaymentPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const [snack, setSnack] = useState({ open: false, severity: "error", message: "" });
+  const [snack, setSnack] = useState({
+    open: false,
+    severity: "error",
+    message: "",
+  });
   const paymentSubmitted = useRef(false);
   const [processing, setProcessing] = useState(false);
 
@@ -47,19 +51,35 @@ export default function PaymentPage() {
 
   const validate = () => {
     if (!passengerName.trim() || passengerName.length < 2) {
-      setSnack({ open: true, severity: "warning", message: "Passenger name must be at least 2 characters." });
+      setSnack({
+        open: true,
+        severity: "warning",
+        message: "Passenger name must be at least 2 characters.",
+      });
       return false;
     }
     if (!email.trim()) {
-      setSnack({ open: true, severity: "warning", message: "Email is required." });
+      setSnack({
+        open: true,
+        severity: "warning",
+        message: "Email is required.",
+      });
       return false;
     }
     if (!phone.trim() || !/^\d{10}$/.test(phone)) {
-      setSnack({ open: true, severity: "warning", message: "Phone number must be exactly 10 digits." });
+      setSnack({
+        open: true,
+        severity: "warning",
+        message: "Phone number must be exactly 10 digits.",
+      });
       return false;
     }
     if (!seats || seats < 1) {
-      setSnack({ open: true, severity: "warning", message: "Seats must be at least 1." });
+      setSnack({
+        open: true,
+        severity: "warning",
+        message: "Seats must be at least 1.",
+      });
       return false;
     }
     return true;
@@ -71,7 +91,7 @@ export default function PaymentPage() {
     if (!validate()) return;
     if (paymentSubmitted.current) return;
 
-    paymentSubmitted.current = true; // ✅ immediately mark as submitted
+    paymentSubmitted.current = true;
     setProcessing(true);
 
     const options = {
@@ -93,7 +113,6 @@ export default function PaymentPage() {
             date: new Date().toLocaleString(),
           };
 
-          // ✅ POST once to backend
           await axios.post("http://localhost:8000/api/book", {
             user_id: user.id,
             train_id: train.id,
@@ -106,8 +125,12 @@ export default function PaymentPage() {
           navigate("/receipt", { state: { receipt } });
         } catch (err) {
           console.error("Booking failed:", err.response?.data || err);
-          setSnack({ open: true, severity: "error", message: "Booking failed. Try again." });
-          paymentSubmitted.current = false; // allow retry if failed
+          setSnack({
+            open: true,
+            severity: "error",
+            message: "Booking failed. Try again.",
+          });
+          paymentSubmitted.current = false;
         }
       },
       prefill: { name: passengerName, email, contact: phone },
@@ -125,17 +148,12 @@ export default function PaymentPage() {
     !processing;
 
   return (
-    <div className="payment-page">
+    <div className="payment-page container-fluid d-flex justify-content-center align-items-center p-3">
       <style>{`
         .payment-page {
           background: url("/pay.jpg") no-repeat center center fixed;
           background-size: cover;
           min-height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 20px;
-          border: 2px solid white !important;
         }
         .MuiDialog-paper {
           border-radius: 18px !important;
@@ -144,7 +162,7 @@ export default function PaymentPage() {
           box-shadow: 0 12px 35px rgba(0,0,0,0.3) !important;
           border: 2px solid white !important;
           overflow: hidden;
-          opacity: 0.9;
+          opacity: 0.95;
         }
         .MuiDialogTitle-root {
           font-weight: bold;
@@ -155,24 +173,6 @@ export default function PaymentPage() {
           padding: 14px 0 !important;
           letter-spacing: 0.5px;
         }
-        .MuiDialogContent-root {
-          background: rgba(53, 56, 57, 0.8);
-          padding: 24px !important;
-          color: white;
-        }
-        .MuiButton-containedPrimary {
-          background: linear-gradient(45deg, #ff9800, #ffc107);
-          font-weight: bold !important;
-          border-radius: 10px !important;
-          padding: 8px 20px !important;
-          text-transform: none !important;
-          box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
-          transition: all 0.3s ease;
-        }
-        .MuiButton-containedPrimary:hover {
-          background: linear-gradient(45deg, #ff9800, #ffc107);
-          transform: translateY(-2px);
-        }
         .receipt-box {
           border-radius: 12px;
           background: rgba(245, 245, 245, 0.9);
@@ -181,59 +181,114 @@ export default function PaymentPage() {
         }
       `}</style>
 
-      <Dialog open fullWidth maxWidth="sm" BackdropProps={{ sx: { backgroundColor: "transparent" } }}>
+      <Dialog
+        open
+        fullWidth
+        maxWidth="sm"
+        BackdropProps={{ sx: { backgroundColor: "transparent" } }}
+      >
         <DialogTitle>🚆 Payment for {train.name}</DialogTitle>
         <DialogContent dividers>
-          <Typography variant="subtitle1" gutterBottom>
-            {train.from_station} → {train.to_station} at {train.time}
-          </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            💺 Price per Seat: ₹{train.price}
-          </Typography>
+          <div className="container">
+            <div className="row text-center mb-3">
+              <div className="col-12">
+                <Typography variant="subtitle1">
+                  {train.from_station} → {train.to_station} at {train.time}
+                </Typography>
+                <Typography variant="subtitle2">
+                  💺 Price per Seat: ₹{train.price}
+                </Typography>
+              </div>
+            </div>
 
-          <TextField
-            fullWidth margin="dense" label="Passenger Name" value={passengerName}
-            onChange={(e) => setPassengerName(e.target.value)} required
-            InputProps={{ style: { color: "white" }, sx: { "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "white" } } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+            <div className="row">
+              <div className="col-12 col-md-6 mb-3">
+                <TextField
+                  fullWidth
+                  label="Passenger Name"
+                  value={passengerName}
+                  onChange={(e) => setPassengerName(e.target.value)}
+                  required
+                  InputProps={{ style: { color: "white" } }}
+                  InputLabelProps={{ style: { color: "white" } }}
+                />
+              </div>
 
-          <TextField
-            fullWidth margin="dense" label="Email (from login)" type="email" value={email} disabled required
-            InputProps={{ style: { color: "white" }, sx: { "& .MuiOutlinedInput-notchedOutline": { border: "2px solid white !important" }, "& .Mui-disabled": { WebkitTextFillColor: "white !important", opacity: 1 } } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+              <div className="col-12 col-md-6 mb-3">
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  inputProps={{ maxLength: 10, pattern: "\\d{10}" }}
+                  InputProps={{ style: { color: "white" } }}
+                  InputLabelProps={{ style: { color: "white" } }}
+                />
+              </div>
 
-          <TextField
-            fullWidth margin="dense" label="Phone Number" type="tel" value={phone}
-            onChange={(e) => setPhone(e.target.value)} required
-            inputProps={{ maxLength: 10, pattern: "\\d{10}" }}
-            InputProps={{ style: { color: "white" }, sx: { "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "white" } } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+              <div className="col-12 col-md-6 mb-3">
+                <TextField
+                  fullWidth
+                  label="Email (from login)"
+                  type="email"
+                  value={email}
+                  disabled
+                  required
+                  InputProps={{ style: { color: "white" } }}
+                  InputLabelProps={{ style: { color: "white" } }}
+                />
+              </div>
 
-          <TextField
-            fullWidth margin="dense" label="Seats" type="number" value={seats} onChange={handleSeatChange} required
-            inputProps={{ min: 1 }}
-            InputProps={{ style: { color: "white" }, sx: { "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "white" } } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+              <div className="col-12 col-md-6 mb-3">
+                <TextField
+                  fullWidth
+                  label="Seats"
+                  type="number"
+                  value={seats}
+                  onChange={handleSeatChange}
+                  required
+                  inputProps={{ min: 1 }}
+                  InputProps={{ style: { color: "white" } }}
+                  InputLabelProps={{ style: { color: "white" } }}
+                />
+              </div>
+            </div>
 
-          <Paper className="receipt-box" sx={{ mt: 2 }}>
-            <Typography variant="h6">Total Price: ₹{totalPrice}</Typography>
-          </Paper>
+            <Paper className="receipt-box mt-3">
+              <Typography variant="h6">Total Price: ₹{totalPrice}</Typography>
+            </Paper>
+          </div>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={() => navigate("/search")} color="secondary">Cancel</Button>
-          <Button onClick={handlePayment} variant="contained" color="primary" disabled={!isFormValid}>
+        <DialogActions className="d-flex justify-content-between px-3 pb-3">
+          <Button onClick={() => navigate("/search")} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handlePayment}
+            variant="contained"
+            color="primary"
+            disabled={!isFormValid}
+          >
             💳 Pay with Razorpay
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snack.open} autoHideDuration={3500} onClose={closeSnack} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-        <Alert onClose={closeSnack} severity={snack.severity} variant="filled" sx={{ fontWeight: 600 }}>
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={3500}
+        onClose={closeSnack}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={closeSnack}
+          severity={snack.severity}
+          variant="filled"
+          sx={{ fontWeight: 600 }}
+        >
           {snack.message}
         </Alert>
       </Snackbar>
