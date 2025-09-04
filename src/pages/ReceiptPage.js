@@ -15,18 +15,18 @@ export default function ReceiptPage() {
     const doc = new jsPDF("p", "mm", "a4");
 
     // ===== Card Background =====
-    doc.setFillColor(53, 56, 57);
-    doc.rect(15, 30, 180, 230, "F");
+    doc.setFillColor(53, 56, 57); // Onyx (dark grey-black)
+    doc.rect(15, 30, 180, 230, "F"); // Card area
 
     // ===== Card Border =====
-    doc.setDrawColor(255, 165, 0);
+    doc.setDrawColor(255, 165, 0); // Orange border
     doc.setLineWidth(1.5);
     doc.rect(15, 30, 180, 230);
 
     // ===== Header =====
-    doc.setFillColor(30, 30, 30);
+    doc.setFillColor(30, 30, 30); // Darker strip
     doc.rect(15, 30, 180, 25, "F");
-    doc.setTextColor(255, 165, 0);
+    doc.setTextColor(255, 165, 0); // Orange title
     doc.setFontSize(18);
     doc.text("GoRaiL - Payment Receipt", 105, 47, { align: "center" });
 
@@ -84,12 +84,6 @@ export default function ReceiptPage() {
 
   return (
     <>
-      {/* Bootstrap Import */}
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      />
-
       <style>{`
         body {
           margin: 0;
@@ -100,18 +94,23 @@ export default function ReceiptPage() {
       `}</style>
 
       <Box
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "100vh", padding: "15px" }}
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 2,
+        }}
       >
-        <Container fluid="sm">
+        <Container maxWidth="sm">
           <Paper
-            className="mx-auto text-center"
-            style={{
-              maxWidth: "600px",
-              padding: "30px",
-              borderRadius: "15px",
+            sx={{
+              p: 4,
+              borderRadius: 3,
               boxShadow: "0px 8px 24px rgba(0,0,0,0.2)",
-              background: "rgba(57, 54, 53, 0.8)",
+              textAlign: "center",
+              background: " rgba(57, 54, 53, 0.8)",
+              opacity: 0.8,
               border: "2px solid black",
               color: "white",
             }}
@@ -119,41 +118,36 @@ export default function ReceiptPage() {
             <Typography
               variant="h5"
               gutterBottom
-              style={{ fontWeight: "bold", color: "deepskyblue" }}
+              sx={{ fontWeight: "bold", color: "deepskyblue" }}
             >
               Payment Receipt
             </Typography>
 
-            {/* Responsive Info using Bootstrap Grid */}
-            <div className="row text-start mt-3">
-              <div className="col-12 col-md-6">
-                <p><b>Passenger:</b> {receipt.passengerName}</p>
-                <p><b>Train:</b> {receipt.train.name}</p>
-                <p><b>Route:</b> {receipt.train.from_station} → {receipt.train.to_station}</p>
-                <p><b>Time:</b> {receipt.train.time}</p>
-              </div>
-              <div className="col-12 col-md-6">
-                <p><b>Seats:</b> {receipt.seats}</p>
-                <p><b>Total Paid:</b> ₹{receipt.totalPrice}</p>
-                <p><b>Payment ID:</b> {receipt.paymentId}</p>
-                <p><b>Date:</b> {receipt.date}</p>
-              </div>
-            </div>
+            <Typography>Passenger: {receipt.passengerName}</Typography>
+            <Typography>Train: {receipt.train.name}</Typography>
+            <Typography>
+              Route: {receipt.train.from_station} → {receipt.train.to_station}
+            </Typography>
+            <Typography>⏰ Time: {receipt.train.time}</Typography>
+            <Typography>Seats: {receipt.seats}</Typography>
+            <Typography>Total Paid: ₹{receipt.totalPrice}</Typography>
+            <Typography>Payment ID: {receipt.paymentId}</Typography>
+            <Typography>Date: {receipt.date}</Typography>
 
-            {/* Buttons */}
-            <Box className="d-flex flex-wrap justify-content-center gap-2 mt-3">
+            <Box sx={{ mt: 3 }}>
               <Button
+                sx={{ mr: 2, borderRadius: 2, px: 3 }}
                 variant="contained"
                 onClick={() => navigate("/")}
-                className="px-4"
               >
                 Go Home
               </Button>
+
               <Button
+                sx={{ borderRadius: 2, px: 3 }}
                 variant="contained"
                 color="primary"
                 onClick={handleDownload}
-                className="px-4"
               >
                 Download Receipt
               </Button>
