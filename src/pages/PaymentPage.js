@@ -113,7 +113,7 @@ export default function PaymentPage() {
             date: new Date().toLocaleString(),
           };
 
-          await axios.post("http://localhost:8000/api/book", {
+          await axios.post("https://your-backend.onrender.com/api/book, {
             user_id: user.id,
             train_id: train.id,
             passenger_name: passengerName,
