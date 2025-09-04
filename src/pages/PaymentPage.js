@@ -94,7 +94,7 @@ export default function PaymentPage() {
           };
 
           // ✅ POST once to backend
-          await axios.post("http://localhost:8000/api/book", {
+          await axios.post("https://gorail-project.onrender.com/api/book", {
             user_id: user.id,
             train_id: train.id,
             passenger_name: passengerName,
