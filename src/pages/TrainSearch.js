@@ -20,7 +20,7 @@ export default function TrainSearch() {
   ];
 
   useEffect(() => {
-    fetch("https://your-backend.onrender.com/api/trains")
+    fetch("https://gorail-project.onrender.com/api/trains")
       .then(res => res.json())
       .then(data => setTrains(data))
       .catch(() => setTrains(dummyTrains));
