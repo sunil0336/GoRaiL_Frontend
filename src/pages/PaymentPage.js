@@ -35,6 +35,16 @@ export default function PaymentPage() {
 
   const closeSnack = () => setSnack({ ...snack, open: false });
 
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => document.body.removeChild(script);
+  }, []);
+
+  // Load user info
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) navigate("/login");
@@ -44,7 +54,7 @@ export default function PaymentPage() {
   if (!train) return <Typography>No Train Info Found</Typography>;
 
   const handleSeatChange = (e) => {
-    const seatCount = Number(e.target.value);
+    const seatCount = Math.max(1, Number(e.target.value) || 1);
     setSeats(seatCount);
     setTotalPrice(seatCount * train.price);
   };
@@ -66,7 +76,7 @@ export default function PaymentPage() {
       });
       return false;
     }
-    if (!phone.trim() || !/^\d{10}$/.test(phone)) {
+    if (!phone.trim() || !/^\d{10}$/.test(phone.trim())) {
       setSnack({
         open: true,
         severity: "warning",
@@ -113,14 +123,17 @@ export default function PaymentPage() {
             date: new Date().toLocaleString(),
           };
 
-          await axios.post("http://localhost:8000/api/book", {
-            user_id: user.id,
-            train_id: train.id,
-            passenger_name: passengerName,
-            seats,
-            payment_id: receipt.paymentId,
-            notes: "Paid via Razorpay",
-          });
+          await axios.post(
+            "https://gorail-project.onrender.com/api/book",
+            {
+              user_id: user.id,
+              train_id: train.id,
+              passenger_name: passengerName,
+              seats,
+              payment_id: receipt.paymentId,
+              notes: "Paid via Razorpay",
+            }
+          );
 
           navigate("/receipt", { state: { receipt } });
         } catch (err) {
@@ -131,6 +144,7 @@ export default function PaymentPage() {
             message: "Booking failed. Try again.",
           });
           paymentSubmitted.current = false;
+          setProcessing(false);
         }
       },
       prefill: { name: passengerName, email, contact: phone },
@@ -143,7 +157,7 @@ export default function PaymentPage() {
 
   const isFormValid =
     passengerName.trim().length >= 2 &&
-    /^\d{10}$/.test(phone) &&
+    /^\d{10}$/.test(phone.trim()) &&
     seats >= 1 &&
     !processing;
 
@@ -270,9 +284,9 @@ export default function PaymentPage() {
             onClick={handlePayment}
             variant="contained"
             color="primary"
-            disabled={!isFormValid}
+            disabled={!isFormValid || processing}
           >
-            💳 Pay with Razorpay
+            {processing ? "Processing..." : "💳 Pay with Razorpay"}
           </Button>
         </DialogActions>
       </Dialog>
