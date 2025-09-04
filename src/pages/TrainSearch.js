@@ -18,7 +18,7 @@ export default function TrainSearch() {
   const dummyTrains = [];
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/trains")
+    fetch("https://your-backend.onrender.com/api/trains)
       .then(res => res.json())
       .then(data => setTrains(data))
       .catch(() => setTrains(dummyTrains));
