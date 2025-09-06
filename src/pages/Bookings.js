@@ -20,7 +20,7 @@ export default function Bookings() {
         const trainsData = {};
         await Promise.all(
           trainIds.map(async (id) => {
-            const trainRes = await fetch(`http://localhost:8000/api/trains/${id}`);
+            const trainRes = await fetch(`https://gorail-project.onrender.com/api/trains/${id}`);
             if (trainRes.ok) trainsData[id] = await trainRes.json();
           })
         );
