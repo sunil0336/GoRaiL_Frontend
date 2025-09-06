@@ -19,6 +19,7 @@ export default function Bookings() {
       try {
         const BASE_URL = "https://gorail-project.onrender.com/api";
 
+        // Fetch bookings
         const res = await fetch(`${BASE_URL}/bookings/${user.id}`);
         if (!res.ok) return setBookings([]);
         const data = await res.json();
@@ -44,43 +45,67 @@ export default function Bookings() {
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
-<Paper sx={{ p: 4, borderRadius: 3, background: "#353839", color: "white" }}>
-  <Typography
-    variant="h5"
-    sx={{ mb: 4, textAlign: "center", fontWeight: 700, color: "white" }}
-  >
-    My Bookings
-  </Typography>
+      <Paper sx={{ p: 4, borderRadius: 3, background: "#353839" }}>
+        <Typography
+          variant="h5"
+          sx={{ mb: 4, textAlign: "center", fontWeight: 700, color: "white" }}
+        >
+          My Bookings
+        </Typography>
 
-  {bookings.length === 0 ? (
-    <Typography sx={{ textAlign: "center", color: "gray" }}>No bookings yet.</Typography>
-  ) : (
-    bookings.map((b, i) => {
-      const train = trains[b.train_id];
-      if (!train) return (
-        <Paper key={i} sx={{ p: 3, mb: 3, borderRadius: 2, background: "#444" }}>
-          <Typography sx={{ color: "white" }}>Loading train info...</Typography>
-        </Paper>
-      );
+        {bookings.length === 0 ? (
+          <Typography sx={{ textAlign: "center", color: "gray" }}>
+            No bookings yet.
+          </Typography>
+        ) : (
+          bookings.map((b, i) => {
+            const train = trains[b.train_id];
+            if (!train) {
+              return (
+                <Paper
+                  key={i}
+                  sx={{ p: 3, mb: 3, borderRadius: 2, background: "#444" }}
+                >
+                  <Typography sx={{ color: "white" }}>Loading train info...</Typography>
+                </Paper>
+              );
+            }
 
-      return (
-        <Paper key={i} sx={{ p: 3, mb: 3, borderRadius: 2, background: "#444" }}>
-          <Typography variant="h6" sx={{ mb: 1, color: "white" }}>🚆 {train.name}</Typography>
-          <Typography sx={{ color: "white" }}>📍 Route: {train.from_station} → {train.to_station}</Typography>
-          <Typography sx={{ color: "white" }}>⏰ Time: {train.time}</Typography>
-          <Typography sx={{ color: "white" }}>📅 Date: {new Date(train.date).toLocaleDateString()}</Typography>
+            return (
+              <Paper
+                key={i}
+                sx={{ p: 3, mb: 3, borderRadius: 2, background: "#444" }}
+              >
+                {/* Train Info */}
+                <Typography variant="h6" sx={{ mb: 1, color: "white" }}>
+                  🚆 {train.name}
+                </Typography>
+                <Typography sx={{ color: "white" }}>
+                  📍 Route: {train.from_station} → {train.to_station}
+                </Typography>
+                <Typography sx={{ color: "white" }}>⏰ Time: {train.time}</Typography>
+                <Typography sx={{ color: "white" }}>
+                  📅 Date: {new Date(train.date).toLocaleDateString()}
+                </Typography>
 
-          <Divider sx={{ my: 1, borderColor: "#888" }} />
+                <Divider sx={{ my: 1, borderColor: "#888" }} />
 
-          <Typography sx={{ color: "white" }}>👤 Passenger: {b.passenger_name}</Typography>
-          <Typography sx={{ color: "white" }}>🎟 Seats: {b.seats}</Typography>
-          <Typography sx={{ color: "white" }}>💰 Price per seat: ₹{b.booked_price}</Typography>
-          <Typography sx={{ color: "white" }}>🏷 Total Price: ₹{b.total_price}</Typography>
-        </Paper>
-      );
-    })
-  )}
-</Paper>
+                {/* Passenger / Booking Info */}
+                <Typography sx={{ color: "white" }}>
+                  👤 Passenger: {b.passenger_name}
+                </Typography>
+                <Typography sx={{ color: "white" }}>🎟 Seats: {b.seats}</Typography>
+                <Typography sx={{ color: "white" }}>
+                  💰 Price per seat: ₹{b.booked_price}
+                </Typography>
+                <Typography sx={{ color: "white", fontWeight: 600 }}>
+                  🏷 Total Price: ₹{b.total_price}
+                </Typography>
+              </Paper>
+            );
+          })
+        )}
+      </Paper>
     </Container>
   );
 }
