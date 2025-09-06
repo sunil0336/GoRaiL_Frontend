@@ -11,7 +11,7 @@ export default function Bookings() {
 
     const fetchBookings = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/bookings/${user.id}`);
+        const res = await fetch(`https://gorail-project.onrender.com/api/bookings/${user.id}`);
         if (!res.ok) return setBookings([]);
         const data = await res.json();
         setBookings(data);
