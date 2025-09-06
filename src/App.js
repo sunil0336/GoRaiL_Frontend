@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import PaymentPage from "./pages/PaymentPage";
 import ReceiptPage from "./pages/ReceiptPage";
 import Profile from "./pages/Profile"; 
+import Bookings from "./pages/Bookings";
 // or "./components/Profile"; adjust the path to where Profile.js is
 
            // if you still want Home separately
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/payment" element={<PaymentPage />} />
   <Route path="/receipt" element={<ReceiptPage />} />
   <Route path="/profile" element={<Profile />} />
+  <Route path="/bookings" element={<Bookings />} />
 
 
           </Routes>
