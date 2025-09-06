@@ -41,15 +41,7 @@ export default function Bookings() {
   }, [user]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundImage: "url('/src/train2.jpg')", // <-- your image path
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        paddingTop: "80px", // to avoid navbar overlap if fixed
-      }}
-    >
+    <div className = "auth-page">
       <Container maxWidth="md" sx={{ py: 5 }}>
         <Paper sx={{ p: 4, borderRadius: 3, background: "rgba(53, 56, 57, 0.85)" }}>
           <Typography
