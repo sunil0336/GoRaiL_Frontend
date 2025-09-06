@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Paper,
@@ -39,6 +39,7 @@ export default function Login() {
     if (existingUser) {
       if (!window.confirm("Another user is already logged in. Log out first?")) return;
       localStorage.removeItem("user");
+      localStorage.removeItem("userId");
     }
 
     if (!validate()) return;
@@ -46,7 +47,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://gorail-project.onrender.com/api/login", {
+      const res = await fetch("http://localhost:8000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email.trim(), password: form.password }),
@@ -55,18 +56,23 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
+        // ✅ Save both user and userId separately
         localStorage.setItem("user", JSON.stringify(data));
+        if (data.id || data.user_id) {
+          localStorage.setItem("userId", data.id || data.user_id);
+        }
+
         setSnack({
           open: true,
           severity: "success",
-          message: `Welcome back, ${data.name}! Redirecting...`,
+          message: `Welcome back, ${data.name || "User"}! Redirecting...`,
         });
         setTimeout(() => navigate("/search"), 1100);
       } else {
         let errorMsg = "Invalid credentials.";
         if (data.detail) {
           if (typeof data.detail === "string") errorMsg = data.detail;
-          else if (Array.isArray(data.detail)) errorMsg = data.detail.map(e => e.msg).join(", ");
+          else if (Array.isArray(data.detail)) errorMsg = data.detail.map((e) => e.msg).join(", ");
         }
         setSnack({ open: true, severity: "error", message: errorMsg });
       }
