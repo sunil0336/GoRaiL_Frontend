@@ -6,7 +6,6 @@ import "../index.css";
 export default function IndexPage() {
   return (
     <div className="video-background">
-      {/* ✅ Use video from public folder */}
       <video autoPlay loop muted playsInline>
         <source src="/videos/train3.mp4" type="video/mp4" />
       </video>

@@ -81,7 +81,7 @@ export default function Register() {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     const payload = {
-      full_name: form.fullName, // map correctly
+      full_name: form.fullName,
       username: form.username,
       email: form.email,
       password: form.password,
