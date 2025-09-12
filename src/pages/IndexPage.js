@@ -40,6 +40,7 @@ export default function IndexPage() {
               to="/Login"
               sx={{ mt: 2 }}
               border= "2px solid white"
+              
             >
               Get Started
             </Button>
