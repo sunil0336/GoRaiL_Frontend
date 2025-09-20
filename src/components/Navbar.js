@@ -28,11 +28,11 @@ export default function Navbar() {
         <Button color="inherit" component={Link} to="/register" sx={{ textTransform: "none" }}>Register</Button>
         <Button color="inherit" component={Link} to="/search" sx={{ textTransform: "none" }}>Search Trains</Button>
 
-        {user && (
-          <>
+        // {user && (
+        //   <>
             <Button color="inherit" component={Link} to="/bookings" sx={{ textTransform: "none" }}>Bookings</Button>
             <Button color="inherit" component={Link} to="/profile" sx={{ textTransform: "none" }}>Profile</Button>
-          </>
+          // </>
         )}
       </Toolbar>
     </AppBar>
